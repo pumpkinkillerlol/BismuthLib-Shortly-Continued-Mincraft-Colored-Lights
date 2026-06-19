@@ -1,8 +1,12 @@
-# BismuthLib
-A simple client-side colored light mod/library for Fabric.
-Can load information about block light colors from resourcepacks
-and calculate color for blocks that don't have json-specified colors.
+# 💎 BismuthLib
 
+A simple client-side colored light mod/library for Fabric. It can load block light color information from resource packs and calculate colors for blocks that don't have JSON-specified colors.
+
+---
+
+### 👥 Credits
+* **Original Author:** [paulevsGitch](https://github.com/paulevsGitch)
+* **Ported & Optimized by:** [mathjewkin/pumpkinkillerlol] edited with local AI so I dont own it and will never own it your free to do whatever
 <br/>
 
 ### How to add light to blocks:
