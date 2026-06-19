@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.shaders.Uniform;
+import net.minecraft.client.renderer.CompiledShaderProgram;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -20,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -59,7 +59,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BismuthLibClient implements ClientModInitializer {
 	public static final String MOD_ID = "bismuthlib";
 	
-	private static final ResourceLocation LIGHTMAP_ID = new ResourceLocation(MOD_ID, "colored_light");
+	private static final ResourceLocation LIGHTMAP_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "colored_light");
 	private static LevelShaderData data;
 	
 	//private static GPULightPropagator gpuLight;
@@ -81,7 +81,7 @@ public class BismuthLibClient implements ClientModInitializer {
 			PrintCommand.register(dispatcher);
 		});
 		
-		final ResourceLocation location = new ResourceLocation(MOD_ID, "resource_reloader");
+		final ResourceLocation location = ResourceLocation.fromNamespaceAndPath(MOD_ID, "resource_reloader");
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public ResourceLocation getFabricId() {
@@ -120,7 +120,7 @@ public class BismuthLibClient implements ClientModInitializer {
 			
 			final JsonObject storage = obj;
 			storage.keySet().forEach(key -> {
-				ResourceLocation blockID = new ResourceLocation(key);
+				ResourceLocation blockID = ResourceLocation.parse(key);
 				Optional<Block> optional = BuiltInRegistries.BLOCK.getOptional(blockID);
 				if (optional.isPresent()) {
 					Block block = optional.get();
@@ -214,7 +214,7 @@ public class BismuthLibClient implements ClientModInitializer {
 			
 			final JsonObject storage = obj;
 			storage.keySet().forEach(key -> {
-				ResourceLocation blockID = new ResourceLocation(key);
+				ResourceLocation blockID = ResourceLocation.parse(key);
 				Optional<Block> optional = BuiltInRegistries.BLOCK.getOptional(blockID);
 				if (optional.isPresent()) {
 					Block block = optional.get();
@@ -356,7 +356,7 @@ public class BismuthLibClient implements ClientModInitializer {
 	
 	public static void bindWithUniforms() {
 		RenderSystem.setShaderTexture(7, LIGHTMAP_ID);
-		ShaderInstance shader = RenderSystem.getShader();
+		CompiledShaderProgram shader = RenderSystem.getShader();
 		
 		Uniform uniform = shader.getUniform("playerSectionPos");
 		if (uniform != null) {
@@ -415,7 +415,7 @@ public class BismuthLibClient implements ClientModInitializer {
 		long count = 0;
 		for (int x = 0; x < img.getWidth(); x++) {
 			for (int y = 0; y < img.getHeight(); y++) {
-				int abgr = img.getPixelRGBA(x, y);
+				int abgr = img.getPixel(x, y);
 				int r = abgr & 255;
 				int g = (abgr >> 8) & 255;
 				int b = (abgr >> 16) & 255;

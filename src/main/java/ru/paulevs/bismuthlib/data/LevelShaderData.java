@@ -108,8 +108,8 @@ public class LevelShaderData {
 	
 	public void resetAll() {
 		if (level == null) return;
-		short hmin = (short) level.getMinSection();
-		short hmax = (short) level.getMaxSection();
+		short hmin = (short) level.getMinSectionY();
+		short hmax = (short) level.getMaxSectionY();
 		for (int i = 0; i < dataWidth; i++) {
 			int px = lastCenter.getX() - halfWidth + i;
 			for (int j = 0; j < dataWidth; j++) {
@@ -144,7 +144,7 @@ public class LevelShaderData {
 	}
 	
 	private boolean updateSection(Level level, int x, int y, int z, boolean force, LightPropagator propagator) {
-		if (y < level.getMinSection() || y > level.getMaxSection()) return false;
+		if (y < level.getMinSectionY() || y > level.getMaxSectionY()) return false;
 		int indexX = Math.abs(x - lastCenter.getX());
 		int indexY = Math.abs(y - lastCenter.getY());
 		int indexZ = Math.abs(z - lastCenter.getZ());
@@ -174,7 +174,7 @@ public class LevelShaderData {
 					propagator.advancedLight(level, new BlockPos(x, y, z), sectionData);
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
-				System.err.println("[BM] PROP OOB: sec=" + x + "," + y + "," + z + " lv.min=" + level.getMinSection() + " lv.max=" + level.getMaxSection());
+				System.err.println("[BM] PROP OOB: sec=" + x + "," + y + "," + z + " lv.min=" + level.getMinSectionY() + " lv.max=" + level.getMaxSectionY());
 				throw e;
 			}
 			int index = ((indexX * dataHeight) + indexY) * dataWidth + indexZ;
@@ -186,7 +186,12 @@ public class LevelShaderData {
 				try {
 					for (byte j = 0; j < 64; j++) {
 						for (byte i = 0; i < 64; i++) {
-							image.setPixelRGBA(textureX | i, textureY | j, sectionData[dataIndex++]);
+							int color = sectionData[dataIndex++];
+							int a = (color >> 24) & 255;
+							int r = (color >> 16) & 255;
+							int g = (color >> 8) & 255;
+							int b = color & 255;
+							image.setPixel(textureX | i, textureY | j, (a << 24) | (b << 16) | (g << 8) | r);
 						}
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
@@ -206,8 +211,8 @@ public class LevelShaderData {
 		this.level = level;
 		if (lastCenter.getX() != cx || lastCenter.getY() != cy || lastCenter.getZ() != cz) {
 			lastCenter.set(cx, cy, cz);
-			short hmin = (short) level.getMinSection();
-			short hmax = (short) level.getMaxSection();
+			short hmin = (short) level.getMinSectionY();
+			short hmax = (short) level.getMaxSectionY();
 			for (int i = 0; i < dataWidth; i++) {
 				int px = cx - halfWidth + i;
 				for (int j = 0; j < dataWidth; j++) {
@@ -239,7 +244,7 @@ public class LevelShaderData {
 					for (long packed : dirtyRegions) {
 						int texX = (int) (packed >> 32);
 						int texY = (int) (packed & 0xFFFFFFFFL);
-						image.upload(0, texX, texY, texX, texY, 64, 64, false, false, false, false);
+						image.upload(0, texX, texY, texX, texY, 64, 64, false);
 					}
 					dirtyRegions.clear();
 				}

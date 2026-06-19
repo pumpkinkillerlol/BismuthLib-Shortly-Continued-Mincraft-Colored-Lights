@@ -73,6 +73,6 @@ public class AdvancedBlockStorage {
 	}
 	
 	private boolean blockLight(BlockState state, Level level, BlockPos pos) {
-		return state.isSolidRender(level, pos) || !state.propagatesSkylightDown(level, pos);
+		return state.isSolidRender() || !state.propagatesSkylightDown();
 	}
 }

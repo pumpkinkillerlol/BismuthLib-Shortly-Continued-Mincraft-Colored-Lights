@@ -1,6 +1,6 @@
 #version 150
-#moj_import <fog.glsl>
-#moj_import <colorful_fabric.glsl>
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:colorful_fabric.glsl>
 
 uniform sampler2D Sampler0;
 
@@ -11,7 +11,7 @@ uniform float FogEnd;
 
 uniform sampler2D Sampler7;
 
-uniform vec3 ChunkOffset;
+uniform vec3 ModelOffset;
 uniform ivec3 playerSectionPos;
 uniform ivec2 dataScale;
 uniform int dataSide;
@@ -33,9 +33,14 @@ out vec4 fragColor;
 void main() {
 	int textureSize = textureSize(Sampler7, 0).x;
 	vec4 tex = texture(Sampler0, texCoord0);
+#ifdef ALPHA_CUTOUT
+	if (tex.a < ALPHA_CUTOUT) {
+		discard;
+	}
+#endif
 	float emissiveAlpha = textureLod(Sampler0, texCoord0, 0.0).a;
 	vec4 color = tex * ColorModulator;
-	color = addColoredLight(color, vertexColor, tex, Sampler7, blockPos, playerSectionPos, ChunkOffset, dataScale, dataSide, skylight, defaultVertex, fastLight, colorMultiplier, meshNormal, lightsBrightness, emissiveAlpha);
+	color = addColoredLight(color, vertexColor, tex, Sampler7, blockPos, playerSectionPos, ModelOffset, dataScale, dataSide, skylight, defaultVertex, fastLight, colorMultiplier, meshNormal, lightsBrightness, emissiveAlpha);
 	color = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 	fragColor = color;
 }

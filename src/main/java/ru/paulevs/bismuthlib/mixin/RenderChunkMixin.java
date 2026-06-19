@@ -1,6 +1,6 @@
 package ru.paulevs.bismuthlib.mixin;
 
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher.RenderSection;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.paulevs.bismuthlib.gui.CFOptions;
 
-@Mixin(RenderChunk.class)
+@Mixin(RenderSection.class)
 public class RenderChunkMixin {
 	@Shadow @Final private MutableBlockPos origin;
 	

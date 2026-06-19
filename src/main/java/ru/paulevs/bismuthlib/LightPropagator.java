@@ -46,10 +46,10 @@ public class LightPropagator {
 	}
 	
 	public void fastLight(Level level, BlockPos sectionPos, int[] data) {
-		if (sectionPos.getY() < level.getMinSection() || sectionPos.getY() > level.getMaxSection()) return;
+		if (sectionPos.getY() < level.getMinSectionY() || sectionPos.getY() > level.getMaxSectionY()) return;
 		LevelChunk chunk = level.getChunk(sectionPos.getX(), sectionPos.getZ());
 		if (chunk.getPos().x != sectionPos.getX() || chunk.getPos().z != sectionPos.getZ()) return;
-		int sectionIndex = sectionPos.getY() - level.getMinSection();
+		int sectionIndex = sectionPos.getY() - level.getMinSectionY();
 		if (sectionIndex < 0 || sectionIndex >= chunk.getSections().length) return;
 		LevelChunkSection section = chunk.getSection(sectionIndex);
 		if (section == null) return;
@@ -119,10 +119,10 @@ public class LightPropagator {
 	}
 	
 	public void advancedLight(Level level, BlockPos sectionPos, int[] data) {
-		if (sectionPos.getY() < level.getMinSection() || sectionPos.getY() > level.getMaxSection()) return;
+		if (sectionPos.getY() < level.getMinSectionY() || sectionPos.getY() > level.getMaxSectionY()) return;
 		LevelChunk chunk = level.getChunk(sectionPos.getX(), sectionPos.getZ());
 		if (chunk.getPos().x != sectionPos.getX() || chunk.getPos().z != sectionPos.getZ()) return;
-		int sectionIndex = sectionPos.getY() - level.getMinSection();
+		int sectionIndex = sectionPos.getY() - level.getMinSectionY();
 		if (sectionIndex < 0 || sectionIndex >= chunk.getSections().length) return;
 		LevelChunkSection section = chunk.getSection(sectionIndex);
 		if (section == null) return;
@@ -258,7 +258,7 @@ public class LightPropagator {
 	}
 	
 	private boolean blockLight(BlockState state, BlockGetter level, BlockPos pos) {
-		return state.isSolidRender(level, pos) || !state.propagatesSkylightDown(level, pos);
+		return state.isSolidRender() || !state.propagatesSkylightDown();
 	}
 	
 	private static int getMaskIndex(byte x, byte y, byte z) {

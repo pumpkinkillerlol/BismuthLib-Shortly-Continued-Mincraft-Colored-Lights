@@ -51,7 +51,7 @@ public class SimpleBlockStorage implements BlockGetter {
 				int storageZBase = (sz + 1) << 4;
 				for (int sy = -1; sy <= 1; sy++) {
 					int cy = secY + sy;
-					int sectionIndex = cy - level.getMinSection();
+					int sectionIndex = cy - level.getMinSectionY();
 					if (sectionIndex < 0 || sectionIndex >= chunkSections.length) continue;
 					LevelChunkSection section = chunkSections[sectionIndex];
 					if (section == null) continue;
@@ -102,7 +102,7 @@ public class SimpleBlockStorage implements BlockGetter {
 	}
 	
 	@Override
-	public int getMinBuildHeight() {
+	public int getMinY() {
 		return 0;
 	}
 }
