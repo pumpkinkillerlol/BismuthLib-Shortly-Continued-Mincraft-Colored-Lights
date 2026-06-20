@@ -1,0 +1,60 @@
+plugins {
+	id 'fabric-loom' version '1.5-SNAPSHOT'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+archivesBaseName = project.archives_base_name
+version = "MC-${project.minecraft_version}-${project.mod_version}"
+group = project.maven_group
+
+repositories {
+	 mavenCentral()
+}
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "${rootProject.projectDir}/../shared/java"
+			srcDir 'src/main/java'
+		}
+		resources {
+			srcDir "${rootProject.projectDir}/../shared/resources"
+			srcDir 'src/main/resources'
+		}
+	}
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+tasks.withType(AbstractCopyTask).configureEach {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	from("${rootProject.projectDir}/../LICENSE") {
+		rename { "${it}_${project.archives_base_name}"}
+	}
+}
