@@ -3,11 +3,10 @@ on: [pull_request, push]
 
 jobs:
   build:
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java: [17, 21]
-        os: [ubuntu-24.04, windows-latest]
-    runs-on: ${{ matrix.os }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -18,5 +17,5 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
-      - name: build
-        run: powershell -File build-all.ps1
+      - name: build all versions
+        run: bash build-all.sh
