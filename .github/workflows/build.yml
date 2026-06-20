@@ -5,8 +5,13 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
-        java: [17, 21]
+        include:
+          - java: 17
+            group: 17
+          - java: 21
+            group: 21
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -17,5 +22,5 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
-      - name: build all versions
-        run: bash build-all.sh
+      - name: build versions (Java ${{ matrix.java }})
+        run: bash build-all.sh ${{ matrix.group }}
